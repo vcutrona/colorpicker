@@ -18,3 +18,11 @@ document.addEventListener(
 window.api.on("updatePicker", (event, color) => {
   document.querySelector("#picker").style.border = `10px solid ${color}`;
 });
+
+// Linux: clicks are captured by the picker window itself (see events/picker.js)
+document.addEventListener(
+  "mouseup",
+  (event) => window.api.send("pickerClick", event.button),
+  false
+);
+document.addEventListener("contextmenu", (event) => event.preventDefault(), false);
