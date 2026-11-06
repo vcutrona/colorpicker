@@ -1,22 +1,21 @@
 import { FunctionComponent, JSX, useCallback } from 'react'
 import Color from 'colorjs.io'
 import { useTranslation } from 'react-i18next'
-// import { writeText } from '@tauri-apps/plugin-clipboard-manager'
+import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 
-// import Icon, { IconEnum } from '@components/icons'
+import Icon, { IconEnum } from '@components/icons'
 import { useColorStore } from '@stores/colorStore'
-// import { useSettingsStore } from '@stores/settingsStore'
+import { useSettingsStore } from '@stores/settingsStore'
 import { useColorHistoryStore } from '@stores/colorHistoryStore'
-// import { showToast } from '@stores/toastStore'
-import { isValidHex /*, serializeColor*/, toHex } from '@common/color'
+import { showToast } from '@stores/toastStore'
+import { isValidHex, serializeColor, toHex } from '@common/color'
 import { useControlledValue } from '@hooks/index'
 
 import style from './hexInput.module.css'
 
 const HexInput: FunctionComponent = (): JSX.Element => {
   const CommonT = useTranslation('common')
-  const { color, setColor /*, isDarkColor */ } = useColorStore((state) => state)
-  // const { defaultFormat, hexPrefix } = useSettingsStore()
+  const { color, setColor } = useColorStore((state) => state)
   const [inputValue, setInputValue] = useControlledValue(toHex(color))
 
   const onInput = useCallback(
@@ -61,12 +60,14 @@ const HexInput: FunctionComponent = (): JSX.Element => {
     }
   }
 
-  // const onCopy = () => {
-  //   const text = serializeColor(color, defaultFormat, { hexPrefix })
-  //   writeText(text)
-  //     .then(() => showToast(CommonT.t('action.colorCopiedToast')))
-  //     .catch((err) => console.error('Failed to copy color:', err))
-  // }
+  // Copies in the format chosen in Settings, not necessarily hex.
+  const onCopy = () => {
+    const { defaultFormat, hexPrefix } = useSettingsStore.getState()
+    const text = serializeColor(color, defaultFormat, { hexPrefix })
+    writeText(text)
+      .then(() => showToast(CommonT.t('action.colorCopiedToast')))
+      .catch((err) => console.error('Failed to copy color:', err))
+  }
 
   return (
     <div className={style.hexInputGroup}>
@@ -81,18 +82,15 @@ const HexInput: FunctionComponent = (): JSX.Element => {
         onFocus={(e) => e.target.select()}
         placeholder={toHex(color)}
       />
-      {/* <button
+      <button
         type="button"
         className={style.hexInputCopyButton}
         onClick={onCopy}
-        title={CommonT.t("action.copy")}
-        aria-label={CommonT.t("action.copy")}
+        title={CommonT.t('action.copy')}
+        aria-label={CommonT.t('action.copy')}
       >
-        <Icon
-          type={IconEnum.COPY}
-          colors={{ main: isDarkColor ? "#fff" : "#000" }}
-        />
-      </button> */}
+        <Icon type={IconEnum.COPY} />
+      </button>
     </div>
   )
 }

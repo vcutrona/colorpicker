@@ -1,59 +1,41 @@
+/* The hex field and its copy button share one box: the group carries the
+   background and rounding, the field and the button sit inside it. */
 .hexInputGroup {
   display: flex;
+  flex-shrink: 0;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
-}
-
-.hexInputCopyButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
   height: 24px;
-  padding: 5px;
+  padding-right: 2px;
   border-radius: 4px;
-  background: transparent;
-  opacity: 0.7;
-  transition:
-    background-color 0.2s,
-    opacity 0.2s;
-}
-
-.hexInputCopyButton:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-[class~='DARK_COLOR'] .hexInputCopyButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.hexInput {
-  background: linear-gradient(165deg, rgba(0, 0, 0, 0.3) 20%, rgba(0, 0, 0, 0.2) 50%);
-  color: black;
-  width: 82px;
-  height: 24px;
-  font-family: FiraCode, sans-serif;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  font-size: 1em;
-  text-align: center;
-  border-radius: 4px;
-  padding: 2px 0;
-  outline: none;
+  background: rgba(255, 255, 255, 0.55);
+  color: rgba(0, 0, 0, 0.85);
   transition:
     background-color 0.2s,
     color 0.2s;
 }
 
-.hexInput::selection {
-  background: var(--user-selection);
+[class~='DARK_COLOR'] .hexInputGroup {
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
 }
 
-[class~='DARK_COLOR'] .hexInput {
-  background: linear-gradient(-10deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.25) 40%);
-  color: white;
+.hexInput {
+  background: transparent;
+  color: inherit;
+  width: 76px;
+  height: 100%;
+  font-family: FiraCode, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 1em;
+  text-align: center;
+  padding: 2px 0 2px 4px;
+  outline: none;
+}
+
+.hexInput::selection {
+  background: var(--user-selection);
 }
 
 .hexInput::placeholder {
@@ -62,4 +44,37 @@
 
 [class~='DARK_COLOR'] .hexInput::placeholder {
   color: rgba(255, 255, 255, 0.3);
+}
+
+.hexInputCopyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.6;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
+}
+
+.hexInputCopyButton:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[class~='DARK_COLOR'] .hexInputCopyButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.hexInputCopyButton:focus-visible {
+  opacity: 1;
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
 }

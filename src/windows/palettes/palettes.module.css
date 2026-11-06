@@ -160,7 +160,7 @@
   flex: 1;
   min-width: 60px;
   padding: 4px 6px;
-  font-family: 'Fira Code', monospace;
+  font-family: FiraCode, monospace;
   font-size: 0.85em;
   text-transform: uppercase;
   color: var(--overlay-default);

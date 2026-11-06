@@ -1,5 +1,6 @@
 .RGBSlider {
-  width: 70%;
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 400px;
 }
 

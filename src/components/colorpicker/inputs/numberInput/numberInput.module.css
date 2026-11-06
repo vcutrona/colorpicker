@@ -1,11 +1,11 @@
 .numberInput {
-  background: linear-gradient(165deg, rgba(0, 0, 0, 0.3) 20%, rgba(0, 0, 0, 0.2) 50%);
-  color: black;
+  background: rgba(255, 255, 255, 0.55);
+  color: rgba(0, 0, 0, 0.85);
   width: 42px;
   height: 24px;
   font-family: FiraCode, sans-serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1em;
   text-align: center;
   border-radius: 4px;
@@ -17,7 +17,7 @@
 }
 
 [class~='DARK_COLOR'] .numberInput {
-  background: linear-gradient(-10deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.25) 40%);
+  background: rgba(0, 0, 0, 0.3);
   color: white;
 }
 
