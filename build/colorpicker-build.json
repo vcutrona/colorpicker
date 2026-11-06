@@ -28,7 +28,7 @@
     }
   },
   "linux": {
-    "icon": "./build",
+    "icon": "./build/icon.png",
     "synopsis": "Colorpicker App",
     "category": "Graphics",
     "executableName": "colorpicker-app"
