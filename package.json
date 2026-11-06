@@ -27,7 +27,7 @@
   },
   "license": "CECILL-2.1",
   "engines": {
-    "node": ">=24"
+    "node": ">=22"
   },
   "type": "module",
   "scripts": {
@@ -59,11 +59,11 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.11.1",
-    "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
-    "@tauri-apps/plugin-log": "^2.9.0",
-    "@tauri-apps/plugin-notification": "^2.3.3",
-    "@tauri-apps/plugin-store": "^2.4.4",
+    "@tauri-apps/api": "^2.12.0",
+    "@tauri-apps/plugin-clipboard-manager": "^2.5.0",
+    "@tauri-apps/plugin-log": "^2.10.0",
+    "@tauri-apps/plugin-notification": "^2.8.0",
+    "@tauri-apps/plugin-store": "^2.5.0",
     "clsx": "^2.1.1",
     "colorjs.io": "^0.7.0",
     "i18next": "^26.3.6",
