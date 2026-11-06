@@ -7,6 +7,7 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 
 import i18n from './i18n'
 import { emitWindowReady } from '@common/ipc'
+import { isLinuxSync } from '@common/platform'
 
 import Colorpicker from '@windows/colorpicker/colorpicker'
 import Settings from '@windows/settings/settings'
@@ -49,11 +50,19 @@ const AppRouter = () => {
     readyEmitted.current = true
 
     const label = getCurrentWindow().label
+    let sent = false
+    const emitOnce = () => {
+      if (sent) return
+      sent = true
+      emitWindowReady(label).catch(console.error)
+    }
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        emitWindowReady(label).catch(console.error)
-      })
+      requestAnimationFrame(emitOnce)
     })
+    // WebKitGTK (Linux) doesn't run requestAnimationFrame in a window that
+    // was created hidden, so the rAF path above never fires there and the
+    // window would stay invisible until shown some other way.
+    setTimeout(emitOnce, 100)
   }, [])
 
   useEffect(() => {
@@ -78,7 +87,9 @@ const AppRouter = () => {
   useEffect(() => {
     document.body.classList.toggle('BORDERED', isBordered)
     document.body.classList.toggle('COLORED', isFullColored)
-    document.body.classList.toggle('NO_VIBRANCY', !isVibrant)
+    // Linux has no native vibrancy effect (see apply_window_effects), so the
+    // transparent window needs an opaque background there regardless.
+    document.body.classList.toggle('NO_VIBRANCY', !isVibrant || isLinuxSync())
     document.body.classList.toggle('DARK_COLOR', isDarkColor)
 
     return () => {

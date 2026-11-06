@@ -9,7 +9,7 @@ const WindowBar: FunctionComponent = (): JSX.Element => {
   return (
     <section className={style.windowBar} data-tauri-drag-region>
       <AppIcons />
-      <div className={style.spacer} />
+      <div className={style.spacer} data-tauri-drag-region />
       <WindowControls />
     </section>
   )
