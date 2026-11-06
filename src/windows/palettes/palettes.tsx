@@ -132,7 +132,7 @@ const Palettes = () => {
                 ['#60A7C5', 'main-color'],
                 ['#D3415A', 'accent-default'],
               ].map(([color, name]) => (
-                <ColorItem key={color} color={color} name={name} />
+                <ColorItem key={name} color={color} name={name} />
               ))}
             </ColorSection>
             <ColorSection
@@ -159,7 +159,7 @@ const Palettes = () => {
                 ['#C85865', 'accent-variant-lighter'],
                 ['#CF6873', 'accent-variant-lightest'],
               ].map(([color, name]) => (
-                <ColorItem key={color} color={color} name={name} />
+                <ColorItem key={name} color={color} name={name} />
               ))}
             </ColorSection>
             <ColorSection label="Neutral Colors">
@@ -186,7 +186,7 @@ const Palettes = () => {
                 ['#3B3C3C', 'overlay-lighter'],
                 ['#515152', 'overlay-lightest'],
               ].map(([color, name]) => (
-                <ColorItem key={color} color={color} name={name} />
+                <ColorItem key={name} color={color} name={name} />
               ))}
             </ColorSection>
           </section>

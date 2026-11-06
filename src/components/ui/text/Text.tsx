@@ -12,15 +12,24 @@ export interface TextProps {
   children: React.ReactNode
   className?: string
   color?: TextColor
+  /** Rendered element; use `span` inside phrasing-only parents such as `<button>` or `<p>`. */
+  as?: 'p' | 'span'
 }
 
-const Text = ({ size = 'medium', weight = 'normal', children, className, color }: TextProps) => {
+const Text = ({
+  size = 'medium',
+  weight = 'normal',
+  children,
+  className,
+  color,
+  as: Tag = 'p',
+}: TextProps) => {
   return (
-    <p
+    <Tag
       className={classNames(style.text, color && style[color], style[size], style[weight], className)}
     >
       {children}
-    </p>
+    </Tag>
   )
 }
 

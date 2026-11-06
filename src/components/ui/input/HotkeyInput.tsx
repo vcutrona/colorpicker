@@ -141,12 +141,16 @@ const HotkeyInput = ({
         onBlur={stopRecording}
         disabled={disabled}
       >
-        <Text className={style.hotkeyKeys}>
+        <Text as="span" className={style.hotkeyKeys}>
           {displayParts.length > 0 && (
             <KeyCombo keys={displayParts} type="separated" variant="filled" />
           )}
           {isRecording && <span className={style.hotkeyCursor} />}
-          {displayParts.length === 0 && <Text color="accent">{HotkeyT.t('recording')}</Text>}
+          {displayParts.length === 0 && (
+            <Text as="span" color="accent">
+              {HotkeyT.t('recording')}
+            </Text>
+          )}
         </Text>
       </button>
 

@@ -29,11 +29,12 @@ const KeyCombo = ({ keys, type = 'joined', variant = 'filled' }: KeyComboProps) 
       {keys.map((part, i) => (
         <Fragment key={part}>
           {type === 'separated' && i > 0 && (
-            <Text color="accent" size="small">
+            <Text as="span" color="accent" size="small">
               +
             </Text>
           )}
           <Text
+            as="span"
             size="small"
             weight="bold"
             className={classNames(style.keyComboKey, VARIANT_CLASS[variant])}
