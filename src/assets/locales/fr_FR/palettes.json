@@ -24,7 +24,8 @@
   },
   "section": {
     "namePlaceholder": "Nom de la section",
-    "add": "Nouvelle section"
+    "add": "Nouvelle section",
+    "options": "Options de la section"
   },
   "navigation": {
     "collapse": "Réduire la barre latérale",

@@ -1,10 +1,12 @@
 import { FunctionComponent, JSX, useEffect, useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import classNames from 'clsx'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 
 import style from './windowControls.module.css'
 
 const WindowControls: FunctionComponent = (): JSX.Element => {
+  const { t } = useTranslation('common')
   const currentWindow = getCurrentWindow()
   const [isMaximized, setIsMaximized] = useState(false)
   const resizeTimeoutRef = useRef<number | null>(null)
@@ -55,8 +57,8 @@ const WindowControls: FunctionComponent = (): JSX.Element => {
       <button
         className={style.controlButton}
         onClick={handleMinimize}
-        aria-label="Minimize"
-        title="Minimize"
+        aria-label={t('window.minimize')}
+        title={t('window.minimize')}
         tabIndex={-1}
       >
         <svg width="12" height="12" viewBox="0 0 12 12">
@@ -66,8 +68,8 @@ const WindowControls: FunctionComponent = (): JSX.Element => {
       <button
         className={style.controlButton}
         onClick={handleMaximize}
-        aria-label={isMaximized ? 'Restore' : 'Maximize'}
-        title={isMaximized ? 'Restore' : 'Maximize'}
+        aria-label={isMaximized ? t('window.restore') : t('window.maximize')}
+        title={isMaximized ? t('window.restore') : t('window.maximize')}
         tabIndex={-1}
       >
         {isMaximized ? (
@@ -106,8 +108,8 @@ const WindowControls: FunctionComponent = (): JSX.Element => {
       <button
         className={classNames(style.controlButton, style.closeButton)}
         onClick={handleClose}
-        aria-label="Close"
-        title="Close"
+        aria-label={t('window.close')}
+        title={t('window.close')}
         tabIndex={-1}
       >
         <svg width="12" height="12" viewBox="0 0 12 12">

@@ -35,5 +35,16 @@
     "pickerLinuxShort": "Pas encore disponible sous Linux : la pipette n’est pas implémentée.",
     "vibrancyLinux": "Non disponible sous Linux.",
     "notImplemented": "Pas encore implémenté."
+  },
+  "toolbar": {
+    "eyedropper": "Pipette",
+    "palettes": "Palettes",
+    "settings": "Paramètres"
+  },
+  "window": {
+    "minimize": "Réduire",
+    "maximize": "Agrandir",
+    "restore": "Restaurer",
+    "close": "Fermer"
   }
 }

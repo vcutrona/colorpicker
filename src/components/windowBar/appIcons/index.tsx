@@ -18,8 +18,7 @@ const onActivationKey =
   }
 
 const AppIcons: FunctionComponent = (): JSX.Element => {
-  const { t } = useTranslation()
-  const CommonT = useTranslation('common')
+  const { t } = useTranslation('common')
   const pickerSupported = isPickerSupportedSync()
   // Hide/show/restore and applying the result are all handled Rust-side
   // (shortcuts::trigger_global_pick) and delivered via the `color-picked`
@@ -59,8 +58,8 @@ const AppIcons: FunctionComponent = (): JSX.Element => {
         className={classNames(style.iconContainer, !pickerSupported && style.disabled)}
         title={
           pickerSupported
-            ? t('common.eyedropper')
-            : `${t('common.eyedropper')}: ${CommonT.t('unavailable.pickerLinuxShort')}`
+            ? t('toolbar.eyedropper')
+            : `${t('toolbar.eyedropper')}: ${t('unavailable.pickerLinuxShort')}`
         }
         onClick={pickerSupported ? handlePickerClick : undefined}
         onKeyDown={pickerSupported ? onActivationKey(handlePickerClick) : undefined}
@@ -74,7 +73,7 @@ const AppIcons: FunctionComponent = (): JSX.Element => {
       </div>
       <div
         className={style.iconContainer}
-        title={t('common.swatch')}
+        title={t('toolbar.palettes')}
         onClick={handlePalettesClick}
         onKeyDown={onActivationKey(handlePalettesClick)}
         role="button"
@@ -106,7 +105,7 @@ const AppIcons: FunctionComponent = (): JSX.Element => {
       </div> */}
       <div
         className={style.iconContainer}
-        title={t('common.settings')}
+        title={t('toolbar.settings')}
         onClick={handleSettingsClick}
         onKeyDown={onActivationKey(handleSettingsClick)}
         role="button"

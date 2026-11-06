@@ -35,5 +35,16 @@
     "pickerLinuxShort": "Not available on Linux yet: the eyedropper isn't implemented.",
     "vibrancyLinux": "Not available on Linux.",
     "notImplemented": "Not implemented yet."
+  },
+  "toolbar": {
+    "eyedropper": "Eyedropper",
+    "palettes": "Palettes",
+    "settings": "Settings"
+  },
+  "window": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
   }
 }

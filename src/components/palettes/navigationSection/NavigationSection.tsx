@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import classNames from 'clsx'
 
 import { Text, Button } from '@components/ui'
@@ -41,6 +42,7 @@ const NavigationSection = ({
   onCancelEdit,
   children,
 }: NavigationSectionProps) => {
+  const { t } = useTranslation('palettes')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -108,7 +110,7 @@ const NavigationSection = ({
                 isMenuOpen && style.navigationSectionMenuButtonActive,
               )}
               onClick={() => setIsMenuOpen((open) => !open)}
-              aria-label="Section options"
+              aria-label={t('section.options')}
             >
               &#8942;
             </Button>
