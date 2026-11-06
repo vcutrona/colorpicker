@@ -6,6 +6,9 @@
   --n-section-text-active: var(--overlay-lightest);
 
   --n-section-icon: var(--overlay-lighter);
+
+  --n-section-dropdown-bg: var(--window-lightest);
+  --n-section-dropdown-border: var(--window-darker);
 }
 
 :root[data-theme='dark'] .navigationSection {
@@ -17,6 +20,9 @@
   --n-section-text-active: var(--overlay-darker);
 
   --n-section-icon: var(--overlay-darker);
+
+  --n-section-dropdown-bg: var(--window-lighter);
+  --n-section-dropdown-border: var(--window-dark);
 }
 
 .navigationSection {
@@ -112,9 +118,9 @@
   display: flex;
   flex-direction: column;
   min-width: 120px;
-  background-color: var(--surface-popover);
+  background-color: var(--n-section-dropdown-bg);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-popover);
+  border: 1px solid var(--n-section-dropdown-border);
   box-shadow: var(--shadow-popover);
   overflow: hidden;
   z-index: 100;
@@ -124,13 +130,13 @@
   display: block;
   padding: 6px 12px;
   text-align: left;
-  color: var(--text-primary);
+  color: var(--n-section-text);
   cursor: pointer;
   white-space: nowrap;
 }
 
 .navigationSectionDropdownItem:hover {
-  background-color: var(--surface-1-hover);
+  background-color: var(--n-section-bg-hover);
 }
 
 .navigationSectionItems {

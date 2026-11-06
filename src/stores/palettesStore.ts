@@ -26,8 +26,15 @@ interface PalettesStore {
   error: string | null
   initialize: () => Promise<void>
   setActivePalette: (id: string) => Promise<void>
-  addPalette: (name: string) => Promise<void>
+  /** Creates a palette at the end of the root list or of `sectionId`'s list; resolves to its id. */
+  addPalette: (name: string, sectionId?: string | null) => Promise<string>
+  renamePalette: (id: string, name: string) => Promise<void>
   deletePalette: (id: string) => Promise<void>
+  addPaletteSection: (name: string) => Promise<void>
+  renamePaletteSection: (id: string, name: string) => Promise<void>
+  /** Deletes the section but keeps its palettes, moving them to the root list. */
+  deletePaletteSection: (id: string) => Promise<void>
+  setPaletteSectionOpen: (id: string, isOpen: boolean) => Promise<void>
   addColor: (paletteId: string, colorSectionId: string, hex: string) => Promise<void>
   addColorToActivePalette: (hex: string) => Promise<void>
   deleteColor: (paletteId: string, colorSectionId: string, colorId: string) => Promise<void>
@@ -58,6 +65,30 @@ export const usePalettesStore = create<PalettesStore>((set, get) => {
 
   const persistActivePalette = (id: string | null): Promise<void> =>
     persistToStore(storeHandle, { activePaletteId: id })
+
+  /** Set the changed hierarchy in state, then persist the whole schema. */
+  const commit = (next: { paletteSections?: IPaletteSection[]; palettes?: IPalette[] }) => {
+    set(next)
+    const { paletteSections, palettes, defaultPaletteDisplay } = get()
+    return persist(paletteSections, palettes, defaultPaletteDisplay)
+  }
+
+  /** Next free `order` at the root level (sections and section-less palettes share it). */
+  const nextRootOrder = (): number => {
+    const { paletteSections, palettes } = get()
+    const orders = [
+      ...paletteSections.map((section) => section.order),
+      ...palettes.filter((palette) => palette.sectionId === null).map((palette) => palette.order),
+    ]
+    return orders.length > 0 ? Math.max(...orders) + 1000 : 1000
+  }
+
+  const nextOrderInSection = (sectionId: string): number => {
+    const orders = get()
+      .palettes.filter((palette) => palette.sectionId === sectionId)
+      .map((palette) => palette.order)
+    return orders.length > 0 ? Math.max(...orders) + 1000 : 1000
+  }
 
   return {
     paletteSections: [],
@@ -111,31 +142,32 @@ export const usePalettesStore = create<PalettesStore>((set, get) => {
       await persistActivePalette(id)
     },
 
-    addPalette: async (name) => {
+    addPalette: async (name, sectionId = null) => {
       const prevActivePaletteId = get().activePaletteId
-      const { palettes, paletteSections, defaultPaletteDisplay } = get()
-      const rootOrders = [
-        ...paletteSections.map((section) => section.order),
-        ...palettes.filter((palette) => palette.sectionId === null).map((palette) => palette.order),
-      ]
-      const order = rootOrders.length > 0 ? Math.max(...rootOrders) + 1000 : 1000
-
       const palette: IPalette = {
         id: crypto.randomUUID(),
         name,
-        sectionId: null,
-        order,
-        display: defaultPaletteDisplay,
+        sectionId,
+        order: sectionId === null ? nextRootOrder() : nextOrderInSection(sectionId),
+        display: get().defaultPaletteDisplay,
         colorSections: [{ id: crypto.randomUUID(), colors: [] }],
       }
-      const nextPalettes = [...palettes, palette]
-      const activePaletteId = prevActivePaletteId ?? palette.id
-      set({ palettes: nextPalettes, activePaletteId })
-      await persist(paletteSections, nextPalettes, defaultPaletteDisplay)
       if (!prevActivePaletteId) {
-        await persistActivePalette(activePaletteId)
+        set({ activePaletteId: palette.id })
       }
+      await commit({ palettes: [...get().palettes, palette] })
+      if (!prevActivePaletteId) {
+        await persistActivePalette(palette.id)
+      }
+      return palette.id
     },
+
+    renamePalette: (id, name) =>
+      commit({
+        palettes: get().palettes.map((palette) =>
+          palette.id === id ? { ...palette, name } : palette,
+        ),
+      }),
 
     deletePalette: async (id) => {
       const prevActivePaletteId = get().activePaletteId
@@ -149,6 +181,47 @@ export const usePalettesStore = create<PalettesStore>((set, get) => {
         await persistActivePalette(activePaletteId)
       }
     },
+
+    addPaletteSection: (name) => {
+      const section: IPaletteSection = {
+        id: crypto.randomUUID(),
+        name,
+        isOpen: true,
+        order: nextRootOrder(),
+      }
+      return commit({ paletteSections: [...get().paletteSections, section] })
+    },
+
+    renamePaletteSection: (id, name) =>
+      commit({
+        paletteSections: get().paletteSections.map((section) =>
+          section.id === id ? { ...section, name } : section,
+        ),
+      }),
+
+    deletePaletteSection: (id) => {
+      const paletteSections = get().paletteSections.filter((section) => section.id !== id)
+      set({ paletteSections })
+      // Orphaned palettes go to the end of the root list, in their old order.
+      let order = nextRootOrder()
+      const palettes = get()
+        .palettes.slice()
+        .sort((a, b) => a.order - b.order)
+        .map((palette) => {
+          if (palette.sectionId !== id) return palette
+          const moved = { ...palette, sectionId: null, order }
+          order += 1000
+          return moved
+        })
+      return commit({ palettes })
+    },
+
+    setPaletteSectionOpen: (id, isOpen) =>
+      commit({
+        paletteSections: get().paletteSections.map((section) =>
+          section.id === id ? { ...section, isOpen } : section,
+        ),
+      }),
 
     addColor: async (paletteId, colorSectionId, hex) => {
       const { paletteSections, defaultPaletteDisplay } = get()

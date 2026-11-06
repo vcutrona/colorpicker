@@ -1,0 +1,51 @@
+:root .contextMenu {
+  --ctx-bg: var(--window-lightest);
+  --ctx-border: var(--window-darker);
+  --ctx-item-hover: var(--window-darker);
+  --ctx-text: var(--overlay-default);
+}
+
+:root[data-theme='dark'] .contextMenu {
+  --ctx-bg: var(--window-lighter);
+  --ctx-border: var(--window-dark);
+  --ctx-item-hover: var(--surface-default);
+  --ctx-text: var(--overlay-default);
+}
+
+.contextMenu {
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  padding: 4px;
+  background-color: var(--ctx-bg);
+  border: 1px solid var(--ctx-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-popover);
+}
+
+.contextMenuItem,
+.contextMenuItemDanger {
+  display: block;
+  padding: 6px 10px;
+  text-align: left;
+  font-family: Ubuntu, sans-serif;
+  font-size: 0.9em;
+  color: var(--ctx-text);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.contextMenuItemDanger {
+  color: var(--color-danger, #d64545);
+}
+
+.contextMenuItem:hover,
+.contextMenuItemDanger:hover,
+.contextMenuItem:focus-visible,
+.contextMenuItemDanger:focus-visible {
+  background-color: var(--ctx-item-hover);
+  outline: none;
+}

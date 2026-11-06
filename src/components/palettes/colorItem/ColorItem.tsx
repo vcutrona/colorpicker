@@ -34,6 +34,7 @@ export interface ColorItemProps {
   variant?: ColorItemVariant
   size?: ColorItemSize
   onClick?: () => void
+  onContextMenu?: (event: React.MouseEvent) => void
 }
 
 const ColorItem = ({
@@ -44,6 +45,7 @@ const ColorItem = ({
   variant = 'single',
   size = 'md',
   onClick,
+  onContextMenu,
 }: ColorItemProps) => {
   return (
     <section
@@ -56,6 +58,7 @@ const ColorItem = ({
         className={style.colorItem}
         style={{ backgroundColor: color, borderColor: color ? getBorderColor(color) : undefined }}
         onClick={onClick}
+        onContextMenu={onContextMenu}
         onKeyDown={(e) => {
           if (onClick && (e.key === 'Enter' || e.key === ' ')) {
             e.preventDefault()

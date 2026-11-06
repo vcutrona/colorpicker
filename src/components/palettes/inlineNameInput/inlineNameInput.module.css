@@ -1,0 +1,29 @@
+:root .inlineNameInput {
+  --name-input-bg: var(--window-lightest);
+  --name-input-border: var(--surface-default);
+  --name-input-text: var(--overlay-default);
+}
+
+:root[data-theme='dark'] .inlineNameInput {
+  --name-input-bg: var(--window-lighter);
+  --name-input-border: var(--surface-dark);
+  --name-input-text: var(--overlay-default);
+}
+
+.inlineNameInput {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  font-family: Ubuntu, sans-serif;
+  font-size: 0.9em;
+  color: var(--name-input-text);
+  background-color: var(--name-input-bg);
+  border: 1px solid var(--name-input-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  user-select: text;
+}
+
+.inlineNameInput:focus {
+  border-color: var(--focus-outline);
+}

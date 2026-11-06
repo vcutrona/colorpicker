@@ -9,15 +9,18 @@
     "hexPlaceholder": "#RRGGBB",
     "addCurrent": "Ajouter la couleur actuelle",
     "addHex": "Ajouter",
-    "empty": "Aucune couleur dans cette catégorie"
+    "empty": "Aucune couleur dans cette palette pour l’instant. Ajoutez la couleur actuelle ou une valeur hexadécimale."
   },
   "action": {
     "rename": "Renommer",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "apply": "Appliquer",
+    "copy": "Copier"
   },
   "palette": {
     "namePlaceholder": "Nom de la palette",
-    "add": "Nouvelle palette"
+    "add": "Nouvelle palette",
+    "empty": "Aucune palette pour l’instant. Créez-en une avec « Nouvelle palette »."
   },
   "section": {
     "namePlaceholder": "Nom de la section",

@@ -87,3 +87,104 @@
   padding: 20px 20px 60px 20px;
   gap: 20px;
 }
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 6px;
+}
+
+.sidebar > :first-child {
+  flex: 1;
+}
+
+.sidebarActions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebarAction {
+  padding: 6px 12px;
+  text-align: left;
+  font-family: Ubuntu, sans-serif;
+  font-size: 0.85em;
+  color: var(--overlay-lighter);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.sidebarAction:hover {
+  color: var(--overlay-default);
+  background-color: var(--window-darker);
+}
+
+.newSectionInput {
+  display: flex;
+  padding: 6px 8px 6px 12px;
+}
+
+/* Compact variant of the outlined button for the palette toolbar; the
+   default (90px min-width, 8px 16px padding) doesn't fit next to the title. */
+.paletteContent .toolbarButton {
+  min-width: 0;
+  padding: 4px 10px;
+  font-size: 0.85em;
+}
+
+.addCurrentButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.currentSwatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 20%);
+  flex-shrink: 0;
+}
+
+.hexForm {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.hexInput {
+  flex: 1;
+  min-width: 60px;
+  padding: 4px 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  color: var(--overlay-default);
+  background-color: var(--win-content-bg);
+  border: 1px solid var(--win-content-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  user-select: text;
+}
+
+.hexInput::placeholder {
+  text-transform: none;
+}
+
+.hexInput:focus {
+  border-color: var(--focus-outline);
+}
+
+.hexInputInvalid,
+.hexInputInvalid:focus {
+  border-color: var(--color-danger, #d64545);
+}
+
+.emptyState {
+  padding: 20px;
+  text-align: center;
+}

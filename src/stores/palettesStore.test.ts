@@ -162,9 +162,7 @@ describe('palettesStore', () => {
     await usePalettesStore.getState().initialize()
     await usePalettesStore.getState().addPalette('my palette')
     const created = usePalettesStore.getState().palettes.find((p) => p.name === 'my palette')!
-    await usePalettesStore
-      .getState()
-      .addColor(created.id, created.colorSections[0].id, '#123456')
+    await usePalettesStore.getState().addColor(created.id, created.colorSections[0].id, '#123456')
     await usePalettesStore.getState().deletePalette(created.id)
 
     // Simulate an app restart: reset in-memory state, re-`initialize()`
@@ -193,5 +191,77 @@ describe('palettesStore', () => {
     expect(pastel.colorSections[0].colors).toHaveLength(1)
     const flat = usePalettesStore.getState().palettes.find((p) => p.id === 'cat-1')!
     expect(flat.colorSections[0].colors).toHaveLength(0)
+  })
+
+  const initEmpty = async () => {
+    const fakeStore = makeFakeStore({
+      version: 3,
+      paletteSections: [],
+      palettes: [],
+      defaultPaletteDisplay: DEFAULT_PALETTE_DISPLAY,
+    })
+    load.mockResolvedValue(fakeStore)
+    await usePalettesStore.getState().initialize()
+    return fakeStore
+  }
+
+  const persistedSchema = (fakeStore: ReturnType<typeof makeFakeStore>) =>
+    fakeStore._data.get('schema') as {
+      paletteSections: { id: string; name: string; isOpen: boolean }[]
+      palettes: { id: string; name: string; sectionId: string | null; order: number }[]
+    }
+
+  it('addPalette inside a section places it there and resolves to its id', async () => {
+    const fakeStore = await initEmpty()
+    await usePalettesStore.getState().addPaletteSection('Work')
+    const sectionId = usePalettesStore.getState().paletteSections[0].id
+
+    const id = await usePalettesStore.getState().addPalette('Brand', sectionId)
+
+    const palette = usePalettesStore.getState().palettes.find((p) => p.id === id)!
+    expect(palette.sectionId).toBe(sectionId)
+    expect(persistedSchema(fakeStore).palettes[0]).toMatchObject({ id, sectionId })
+  })
+
+  it('renamePalette and renamePaletteSection persist the new names', async () => {
+    const fakeStore = await initEmpty()
+    await usePalettesStore.getState().addPaletteSection('Old section')
+    const id = await usePalettesStore.getState().addPalette('Old palette')
+    const sectionId = usePalettesStore.getState().paletteSections[0].id
+
+    await usePalettesStore.getState().renamePalette(id, 'New palette')
+    await usePalettesStore.getState().renamePaletteSection(sectionId, 'New section')
+
+    expect(persistedSchema(fakeStore).palettes[0].name).toBe('New palette')
+    expect(persistedSchema(fakeStore).paletteSections[0].name).toBe('New section')
+  })
+
+  it('deletePaletteSection keeps its palettes, moving them to the end of the root list', async () => {
+    const fakeStore = await initEmpty()
+    const rootId = await usePalettesStore.getState().addPalette('Root')
+    await usePalettesStore.getState().addPaletteSection('Work')
+    const sectionId = usePalettesStore.getState().paletteSections[0].id
+    const firstId = await usePalettesStore.getState().addPalette('First', sectionId)
+    const secondId = await usePalettesStore.getState().addPalette('Second', sectionId)
+
+    await usePalettesStore.getState().deletePaletteSection(sectionId)
+
+    const { palettes, paletteSections } = usePalettesStore.getState()
+    expect(paletteSections).toHaveLength(0)
+    const byId = (id: string) => palettes.find((p) => p.id === id)!
+    expect(palettes.every((p) => p.sectionId === null)).toBe(true)
+    expect(byId(rootId).order).toBeLessThan(byId(firstId).order)
+    expect(byId(firstId).order).toBeLessThan(byId(secondId).order)
+    expect(persistedSchema(fakeStore).paletteSections).toHaveLength(0)
+  })
+
+  it('setPaletteSectionOpen persists the collapsed state', async () => {
+    const fakeStore = await initEmpty()
+    await usePalettesStore.getState().addPaletteSection('Work')
+    const sectionId = usePalettesStore.getState().paletteSections[0].id
+
+    await usePalettesStore.getState().setPaletteSectionOpen(sectionId, false)
+
+    expect(persistedSchema(fakeStore).paletteSections[0].isOpen).toBe(false)
   })
 })

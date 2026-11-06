@@ -18,7 +18,8 @@ import { usePickerHistoryStore } from '@stores/pickerHistoryStore'
 import { useColorHistoryStore } from '@stores/colorHistoryStore'
 import { showToast } from '@stores/toastStore'
 import { rgbToColor, serializeColor, toHex } from '@common/color'
-import { onColorPicked, onPaletteColorApplied } from '@common/ipc'
+import { emitCurrentColorChanged, onColorPicked, onPaletteColorApplied } from '@common/ipc'
+import debounce from '@common/debounce'
 
 import style from './colorpicker.module.css'
 
@@ -95,6 +96,19 @@ const Colorpicker = () => {
       unlistenPromise.then((unlisten) => unlisten())
     }
   }, [setColor])
+
+  useEffect(() => {
+    // Keep the Palettes window's "add current color" in sync with what's
+    // shown here. Debounced so dragging a slider doesn't flood the event bus.
+    const broadcast = debounce((hex: string) => {
+      emitCurrentColorChanged(hex).catch((err) =>
+        console.error('Failed to broadcast current color:', err),
+      )
+    }, 100)
+    return useColorStore.subscribe((state, prevState) => {
+      if (state.color !== prevState.color) broadcast(toHex(state.color))
+    })
+  }, [])
 
   return (
     <section className={style.colorpicker}>

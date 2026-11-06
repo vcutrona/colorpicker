@@ -1,16 +1,22 @@
-import { Heading, Button } from '@components/ui'
+import { Heading } from '@components/ui'
 
 import style from './paletteMenu.module.css'
 
-const PaletteMenu = () => {
+export interface PaletteMenuProps {
+  title?: string
+  /** Toolbar controls shown on the right. */
+  children?: React.ReactNode
+}
+
+const PaletteMenu = ({ title, children }: PaletteMenuProps) => {
   return (
     <section className={style.paletteMenu}>
-      <Heading level={3} color="primary" className={style.paletteMenuTitle}>
-        Palettes
-      </Heading>
-      <Button variant="transparent" className={style.paletteMenuButton}>
-        +
-      </Button>
+      {title && (
+        <Heading level={3} color="primary" className={style.paletteMenuTitle}>
+          {title}
+        </Heading>
+      )}
+      {children && <div className={style.paletteMenuActions}>{children}</div>}
     </section>
   )
 }

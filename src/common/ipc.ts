@@ -127,3 +127,16 @@ export const emitPaletteColorApplied = (hex: string): Promise<void> =>
 
 export const onPaletteColorApplied = (handler: (hex: string) => void): Promise<UnlistenFn> =>
   listen<string>(PALETTE_COLOR_APPLIED_EVENT, (event) => handler(event.payload))
+
+/**
+ * Emitted by the main window whenever its current color changes, so the
+ * Palettes window (which has its own, separate color store) can offer
+ * "add current color" with the color actually shown in the main window.
+ */
+const CURRENT_COLOR_CHANGED_EVENT = 'current-color-changed'
+
+export const emitCurrentColorChanged = (hex: string): Promise<void> =>
+  emit(CURRENT_COLOR_CHANGED_EVENT, hex)
+
+export const onCurrentColorChanged = (handler: (hex: string) => void): Promise<UnlistenFn> =>
+  listen<string>(CURRENT_COLOR_CHANGED_EVENT, (event) => handler(event.payload))
