@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/github/downloads/toinane/colorpicker/total.svg">
     <img src="https://img.shields.io/github/downloads/toinane/colorpicker/latest/total.svg">
     <img src="https://img.shields.io/github/release-date/Toinane/colorpicker.svg">
-    <img src="https://github.com/Toinane/colorpicker/actions/workflows/dev.yaml/badge.svg">
+    <img src="https://github.com/Toinane/colorpicker/actions/workflows/tauri-build.yml/badge.svg">
     <a href="https://snapcraft.io/colorpicker-app">
       <img alt="colorpicker-app" src="https://snapcraft.io/colorpicker-app/badge.svg" />
     </a>
@@ -34,7 +34,9 @@
 
 Colorpicker is a color management software. Grab any color on your computer screen, easily adjust it to your convenience and save it in personalized color categories.
 
-Colorpicker is built with **Tauri** (Rust + React) and works seamlessly on **Windows**, **macOS** and **Linux**.
+Colorpicker is built with **Tauri** (Rust + React) and runs on **Windows**, **macOS** and **Linux**.
+
+> **Eyedropper availability:** the screen color picker is fully supported on Windows. On macOS it is an early implementation with a reduced feature set, and on Linux it is not implemented yet: the eyedropper button, its hotkey and its settings are disabled there. See [PICKER_FUNCTIONAL_DOCUMENTATION.md](PICKER_FUNCTIONAL_DOCUMENTATION.md) for details.
 
 ## Download
 
@@ -46,7 +48,7 @@ You can download [Colorpicker on the releases page](https://github.com/Toinane/c
 
 Colorpicker uses **React 19** for the frontend and **Rust** for the backend via Tauri. **TypeScript** is used throughout for type safety and better developer experience.
 
-You should use a Code Editor compatible with _Prettier_ and _ESLint_ plugins like **VS Code** or **Cursor**.
+Formatting and linting use [oxfmt](https://oxc.rs) and [oxlint](https://oxc.rs) (configured in `.oxfmtrc.json` and `.oxlintrc.json`). With **VS Code** or **Cursor**, install the recommended extensions from `.vscode/extensions.json` (Tauri, rust-analyzer, Oxc).
 
 ##### Prerequisites
 
@@ -73,11 +75,12 @@ npm run tauri:dev
 
 This starts both the Vite dev server and Tauri backend with hot-reload.
 
-- Run tests and lint
+- Run tests, lint and format
 
 ```shell
 npm test
 npm run lint
+npm run format
 ```
 
 - Build for production
@@ -90,6 +93,9 @@ Outputs will be in `src-tauri/target/release/bundle/`
 
 #### How to make stable release
 
-Colorpicker uses **Github Actions** to make a release automatically. This allows to have the application available on all platforms without having to do it manually.
+Colorpicker uses **GitHub Actions** to build the application on all platforms without having to do it manually:
 
-A **Nightly** version is automatically created at each PR merge on `dev` branch and a **Stable** version is automatically created at each PR merge on `master` branch.
+- **CI** (`.github/workflows/ci.yml`): on every push and pull request to the `tauri` branch, runs `npm run lint`, `npm test`, `cargo check`, `cargo clippy` and `cargo test`.
+- **Tauri Build** (`.github/workflows/tauri-build.yml`): on every push and pull request to `dev` and `master`, builds Colorpicker for Windows, macOS and Linux and creates a **draft** GitHub release tagged `v<version>` (version from `src-tauri/tauri.conf.json`). The draft must be published manually.
+
+`.github/workflows/master.yaml` is the legacy Electron (v2) release workflow: it runs `npm run release`, which no longer exists in this version.

@@ -14,9 +14,10 @@ When the picker is launched, the application enters a dedicated color-picking mo
 
 - A **circular magnifier window** appears on screen
 - The magnifier follows the user's cursor movements in real-time with exceptional smoothness (144+ frames per second)
-- The system cursor becomes invisible, replaced by the magnifier itself
+- The system cursor becomes invisible, replaced by the magnifier itself (unless **Cursor-aside mode** is enabled, see below)
 - The magnifier stays on top of all other windows
 - The picker can be captured from screen captures and recordings, but only if it's possible technically, otherwise, it do not appear.
+- Only one picking session can run at a time: launching the picker again (toolbar, tray or hotkey) while a session is active is ignored.
 
 ### Visual Interface
 
@@ -28,8 +29,9 @@ A circular window that displays a magnified grid view of the pixels surrounding 
 
 **Grid Display:**
 
-- Shows a configurable grid of pixels (default: 9×9 pixels)
+- Shows a configurable grid of pixels: 5×5 (default), 11×11 or 21×21
 - Each pixel in the grid is enlarged to make precise color selection easier
+- An optional semi-transparent **pixel grid** can be drawn between the magnified pixels (see Configuration Options)
 - The **center cell** is highlighted with a distinctive border to indicate which color will be selected
 - The border color of the center cell automatically adapts to ensure visibility:
   - **Dark border** on light colors
@@ -38,8 +40,8 @@ A circular window that displays a magnified grid view of the pixels surrounding 
 **Circular Border:**
 
 - The magnifier has a circular border that frames the entire grid
-- Border color segments adapt intelligently to the colors they're adjacent to
-- This ensures the border remains visible regardless of the underlying screen content
+- By default the border is a constant white
+- **Adaptive border** (experimental, off by default): border segments instead switch between black and white depending on the grid cell they're next to. This was the original behavior; it was moved behind an experimental flag because the adaptive color can itself become hard to see against some colors
 
 #### 2. Color Label
 
@@ -78,13 +80,18 @@ Below the magnifier circle, a color information label displays:
 
 Both actions capture the color value of the center pixel in the magnifier grid and return it to the application.
 
+**Multi-pick** (Windows only):
+
+- **Shift + Left Mouse Click**: Pick the center color **without** closing the picker, so several colors can be picked in one session. Each pick is sent to the application as it happens; the session ends with a plain click, Enter, Escape or a right click. Enter never multi-picks.
+
 ### Cancellation
 
 **Cancel Action:**
 
 - **Escape Key**: Cancel the color picking operation without selecting a color
+- **Right Mouse Click** (Windows only): Same as Escape
 
-This closes the picker and returns no color value to the application.
+This closes the picker and returns no color value to the application (colors already picked with Shift + Click in the same session are kept).
 
 ### Precise Navigation
 
@@ -199,11 +206,13 @@ This advanced feature enables capturing colors from UI elements in their hover s
 
 The picker can be customized with the following parameters:
 
+These options are set in **Settings > Picker** (stored as `eyedropper*` settings and passed to the native picker as `PickerConfig`, see `src-tauri/src/picker/mod.rs`).
+
 ### Grid Size
 
 - **Purpose**: Controls how many pixels are shown in the magnified grid
-- **Default**: 9 (displays a 9×9 grid = 81 pixels)
-- **Range**: Typically 5-11 pixels
+- **Default**: 5 (displays a 5×5 grid = 25 pixels)
+- **Options**: 5, 11 or 21
 - **Effect**:
   - Smaller values = fewer pixels, larger magnification per pixel
   - Larger values = more pixels visible, smaller magnification per pixel
@@ -212,7 +221,7 @@ The picker can be customized with the following parameters:
 
 - **Purpose**: Controls the diameter of the circular magnifier window
 - **Default**: 300 pixels
-- **Range**: Any positive value, typically 200-500 pixels
+- **Options**: 220, 300 or 380 pixels
 - **Effect**:
   - Larger values = bigger window, more screen space used, more detail visible
   - Smaller values = smaller window, less screen space, more compact interface
@@ -243,6 +252,34 @@ The picker can be customized with the following parameters:
 - **Effect**:
   - When true: Underlying windows receive hover events through the magnifier
   - When false: Standard behavior, magnifier blocks all events except click/keyboard
+
+### Show Pixel Grid
+
+- **Purpose**: Draws a semi-transparent grid between the magnified pixels
+- **Default**: false
+- **Options**: true or false
+
+### Cursor-Aside Mode (Windows only)
+
+- **Purpose**: Positions the lens beside the cursor instead of centered on it, so the real mouse pointer stays visible while picking
+- **Default**: false
+- **Effect**:
+  - Forces **Allow Hover Through** on (the previous value is restored when the mode is turned off again)
+  - Because the lens no longer covers the sampled pixels, the window is not excluded from screen capture, so recording/streaming software can see the picker too
+
+### Adaptive Border (Experimental)
+
+- **Purpose**: See *Circular Border* above
+- **Default**: false
+- **Availability**: Settings > General > Experimental, which is hidden until unlocked from the About section
+
+### Application-Level Options
+
+These don't change the magnifier itself but how the application behaves around a picking session:
+
+- **Hide main window while picking** (default: true): the main window is hidden when the picker starts and shown again when it ends
+- **Auto-copy on pick** (default: false): the picked color is copied to the clipboard in the format chosen in Settings > Format, with a confirmation toast
+- **Quick pick (headless)** (default: false): the main window is left untouched (not hidden, shown or restored); the picked color is copied to the clipboard and shown in a system notification
 
 ---
 
@@ -387,15 +424,17 @@ The picker can be customized with the following parameters:
   - Optimized for Windows 10 and 11
   - Supports multi-monitor setups
 
-### In Development
+### Partial (Legacy Draft)
 
-- **macOS**: Planned support
-  - Native implementation in consideration
+- **macOS**: A native implementation exists (ScreenCaptureKit capture + Metal rendering) but is a legacy draft slated for a clean-room rewrite
+  - Supported: grid size, magnifier size, hex label, Allow Hover Through, click/Enter to pick, Escape to cancel, arrow keys (Shift for 10 px)
+  - Not supported yet: multi-pick (Shift + Click), right-click cancel, Detect Background Changes, Show Pixel Grid, Adaptive Border, Cursor-Aside Mode
 
 ### Not Yet Supported
 
 - **Linux**: Not currently implemented
-  - Future consideration
+  - Only a stub exists (`src-tauri/src/picker/platform/linux`), which returns no color
+  - The application disables everything that depends on the picker on Linux: the eyedropper toolbar button, the tray "Launch Picker" item, the picker hotkey and all Settings > Picker options (they're shown greyed out with an explanation)
 
 ---
 
@@ -403,24 +442,29 @@ The picker can be customized with the following parameters:
 
 The picker is invoked through the main ColorPicker application as a command:
 
-**Command Name**: `pick_color`
+**Command Name**: `launch_picker` (frontend: `launchPicker()` in `src/common/ipc.ts`)
 
-**Invocation**: Typically triggered by a button or keyboard shortcut in the main application
+**Invocation**: Three entry points share the same flow (`shortcuts::trigger_global_pick`):
 
-**Return Value**:
+- The eyedropper button in the main window toolbar
+- The **Launch Picker** item of the system tray menu
+- The global hotkey (default: `Ctrl+Shift+C`, `Cmd+Shift+C` on macOS; configurable in Settings > Shortcuts)
 
-- **Success**: Returns the selected color (RGB components + hex value)
-- **Cancellation**: Returns no value (user pressed Escape)
+**Result**:
+
+- Results are delivered to the frontend through the `color-picked` event rather than as a command return value
+- **Each pick**: the event carries the picked color (RGB components + hex value); with multi-pick it fires once per pick
+- **Cancellation**: the event carries no color (user pressed Escape or right-clicked without picking)
 
 **Application Flow**:
 
 1. User triggers color picking action in ColorPicker
-2. Main application window minimizes or hides
+2. Main application window hides (if *Hide main window while picking* is enabled and *Quick pick* is not)
 3. Picker launches in dedicated mode
-4. User selects a color (or cancels)
+4. User selects one or more colors (or cancels)
 5. Picker closes
-6. Main application window reappears
-7. Selected color (if any) is added to the application or used as specified
+6. Main application window reappears, unless *Quick pick* is enabled. If the window was not hidden for the session, it is still brought back when a color was picked and the window was minimized or closed to the tray
+7. Picked color (if any) becomes the current color, is added to the picker history and, depending on the options, is copied to the clipboard
 
 ---
 
@@ -440,11 +484,11 @@ High frame rates and low latency create a professional, responsive experience th
 
 ### Unobtrusive Operation
 
-The picker minimizes its footprint (small moving window instead of fullscreen) and hides the cursor to stay out of the way. It must never sample its own rendering (the lens sits over the sampled pixels); on Windows this currently requires excluding the window from screen capture (`WDA_EXCLUDEFROMCAPTURE`) — a correctness fix, not a goal. Wherever a platform allows solving this without global exclusion, the picker stays visible in screenshots and recordings.
+The picker minimizes its footprint (small moving window instead of fullscreen) and hides the cursor to stay out of the way. It must never sample its own rendering (the lens sits over the sampled pixels); on Windows this currently requires excluding the window from screen capture (`WDA_EXCLUDEFROMCAPTURE`) — a correctness fix, not a goal. Wherever a platform allows solving this without global exclusion, the picker stays visible in screenshots and recordings. Cursor-aside mode is one such case: since the lens is offset from the sampled pixels, the exclusion is skipped.
 
 ### Flexibility
 
-Configuration options allow users to customize the experience for different use cases (video picking, hover states, compact mode, etc.).
+Configuration options allow users to customize the experience for different use cases (video picking, hover states, compact mode, picking several colors at once, etc.).
 
 ---
 
