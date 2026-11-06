@@ -55,7 +55,7 @@ You should use a Code Editor compatible with _Prettier_ and _ESLint_ plugins lik
 - Platform-specific dependencies:
   - **Windows**: Microsoft Visual Studio C++ Build Tools
   - **macOS**: Xcode Command Line Tools
-  - **Linux**: `build-essential`, `libgtk-3-dev`, `libwebkit2gtk-4.0-dev`
+  - **Linux**: `build-essential`, `libssl-dev`, `libwebkit2gtk-4.1-dev`, `libayatana-appindicator3-dev`, `librsvg2-dev`
 
 ##### Development
 
@@ -68,15 +68,22 @@ npm install
 - Launch Colorpicker in development mode (Tauri)
 
 ```shell
-npm run dev
+npm run tauri:dev
 ```
 
 This starts both the Vite dev server and Tauri backend with hot-reload.
 
+- Run tests and lint
+
+```shell
+npm test
+npm run lint
+```
+
 - Build for production
 
 ```shell
-npm run build
+npm run tauri:build
 ```
 
 Outputs will be in `src-tauri/target/release/bundle/`
