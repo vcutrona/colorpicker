@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { SettingsSection, SettingsItem } from '@components/settings'
 import { Toggle } from '@components/ui'
 import { useSettingsStore } from '@stores/settingsStore'
+import { isPickerSupportedSync } from '@common/platform'
 
 const BehaviorSettings = () => {
   const SettingsT = useTranslation('settings', { keyPrefix: 'magnifier.behavior' })
+  const pickerSupported = isPickerSupportedSync()
 
   const eyedropperHideMain = useSettingsStore((state) => state.eyedropperHideMain)
   const eyedropperDetectBackgroundChanges = useSettingsStore(
@@ -47,6 +49,7 @@ const BehaviorSettings = () => {
   return (
     <SettingsSection title={SettingsT.t('title')}>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('hideMain.label')}
         description={SettingsT.t('hideMain.description')}
       >
@@ -56,6 +59,7 @@ const BehaviorSettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('detectBackgroundChanges.label')}
         description={SettingsT.t('detectBackgroundChanges.description')}
       >
@@ -67,7 +71,7 @@ const BehaviorSettings = () => {
       <SettingsItem
         label={SettingsT.t('allowHoverThrough.label')}
         description={SettingsT.t('allowHoverThrough.description')}
-        disabled={eyedropperCursorAsideMode}
+        disabled={!pickerSupported || eyedropperCursorAsideMode}
       >
         <Toggle
           checked={eyedropperAllowHoverThrough}
@@ -75,6 +79,7 @@ const BehaviorSettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('autoCopyOnPick.label')}
         description={SettingsT.t('autoCopyOnPick.description')}
       >
@@ -84,6 +89,7 @@ const BehaviorSettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('quickPickHeadless.label')}
         description={SettingsT.t('quickPickHeadless.description')}
       >
@@ -93,6 +99,7 @@ const BehaviorSettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('cursorAsideMode.label')}
         description={SettingsT.t('cursorAsideMode.description')}
       >

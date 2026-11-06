@@ -29,5 +29,11 @@
   },
   "notification": {
     "colorPickedTitle": "Couleur sélectionnée"
+  },
+  "unavailable": {
+    "pickerLinux": "La pipette n’est pas encore disponible sous Linux : ces réglages n’ont aucun effet.",
+    "pickerLinuxShort": "Pas encore disponible sous Linux : la pipette n’est pas implémentée.",
+    "vibrancyLinux": "Non disponible sous Linux.",
+    "notImplemented": "Pas encore implémenté."
   }
 }

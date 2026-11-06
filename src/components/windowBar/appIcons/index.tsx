@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 
 import Icon, { IconEnum } from '@components/icons'
 import { launchPicker, openSettings, openPalettes } from '@common/ipc'
+import { isPickerSupportedSync } from '@common/platform'
+import classNames from 'clsx'
 
 import style from './appIcons.module.css'
 
@@ -17,6 +19,8 @@ const onActivationKey =
 
 const AppIcons: FunctionComponent = (): JSX.Element => {
   const { t } = useTranslation()
+  const CommonT = useTranslation('common')
+  const pickerSupported = isPickerSupportedSync()
   // Hide/show/restore and applying the result are all handled Rust-side
   // (shortcuts::trigger_global_pick) and delivered via the `color-picked`
   // event listened to in colorpicker.tsx — the single result path shared
@@ -52,12 +56,17 @@ const AppIcons: FunctionComponent = (): JSX.Element => {
   return (
     <section className={style.appIcons}>
       <div
-        className={style.iconContainer}
-        title={t('common.eyedropper')}
-        onClick={handlePickerClick}
-        onKeyDown={onActivationKey(handlePickerClick)}
+        className={classNames(style.iconContainer, !pickerSupported && style.disabled)}
+        title={
+          pickerSupported
+            ? t('common.eyedropper')
+            : `${t('common.eyedropper')}: ${CommonT.t('unavailable.pickerLinuxShort')}`
+        }
+        onClick={pickerSupported ? handlePickerClick : undefined}
+        onKeyDown={pickerSupported ? onActivationKey(handlePickerClick) : undefined}
         role="button"
-        tabIndex={0}
+        aria-disabled={!pickerSupported || undefined}
+        tabIndex={pickerSupported ? 0 : -1}
       >
         <div className={style.svgWrapper}>
           <Icon type={IconEnum.PICKER} />

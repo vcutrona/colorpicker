@@ -27,6 +27,8 @@ const ColorpickerSettings = () => {
         <SettingsItem
           label={SettingsT.t('resetSettings.label')}
           description={SettingsT.t('resetSettings.description')}
+          disabled
+          disabledReason={CommonT.t('unavailable.notImplemented')}
         >
           <Button variant="solid" onClick={() => onResetSettings()}>
             <Text>{CommonT.t('action.reset')}</Text>

@@ -1,0 +1,19 @@
+:root .unavailableNotice {
+  --notice-bg: var(--window-lightest);
+  --notice-border: var(--window-darker);
+}
+
+:root[data-theme='dark'] .unavailableNotice {
+  --notice-bg: var(--window-lighter);
+  --notice-border: var(--window-dark);
+}
+
+/* Same surface as a settings item, so it reads as part of the page in both themes. */
+.unavailableNotice {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--notice-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--notice-bg);
+  font-style: italic;
+}

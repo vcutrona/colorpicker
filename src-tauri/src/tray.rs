@@ -47,7 +47,16 @@ fn build_menu(app: &AppHandle) -> tauri::Result<Menu<Wry>> {
         true,
         None::<&str>,
     )?;
-    let pick_item = MenuItem::with_id(app, "pick", t("common:tray.pick"), true, None::<&str>)?;
+    // The eyedropper is only a stub on Linux (picker/platform/linux), so the
+    // item is shown disabled there rather than doing nothing when clicked.
+    let pick_enabled = cfg!(not(target_os = "linux"));
+    let pick_item = MenuItem::with_id(
+        app,
+        "pick",
+        t("common:tray.pick"),
+        pick_enabled,
+        None::<&str>,
+    )?;
     let quit_item = MenuItem::with_id(app, "quit", t("common:tray.quit"), true, None::<&str>)?;
 
     Menu::with_items(

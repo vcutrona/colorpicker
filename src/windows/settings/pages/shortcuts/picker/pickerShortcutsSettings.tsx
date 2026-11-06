@@ -7,9 +7,11 @@ import { useHotkeyConflict } from '@hooks/index'
 import { setPickerHotkey } from '@common/ipc'
 import { HotkeyInput } from '@components/ui'
 import { showToast } from '@stores/toastStore'
+import { isPickerSupportedSync } from '@common/platform'
 
 const PickerShortcutsSettings = () => {
   const SettingsT = useTranslation('settings', { keyPrefix: 'shortcuts.picker' })
+  const CommonT = useTranslation('common')
   const pickerHotkey = useSettingsStore((state) => state.pickerHotkey)
   const updateSetting = useSettingsStore((state) => state.updateSetting)
   const checkConflict = useHotkeyConflict('pickerHotkey')
@@ -33,6 +35,8 @@ const PickerShortcutsSettings = () => {
       <SettingsItem
         label={SettingsT.t('pickerHotkey.label')}
         description={SettingsT.t('pickerHotkey.description')}
+        disabled={!isPickerSupportedSync()}
+        disabledReason={CommonT.t('unavailable.pickerLinuxShort')}
       >
         <HotkeyInput
           value={pickerHotkey}

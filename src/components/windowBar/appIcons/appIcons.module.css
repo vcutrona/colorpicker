@@ -74,3 +74,14 @@
 .iconContainer svg {
   transition: 0.2s;
 }
+
+/* Feature not available on this platform (e.g. the eyedropper on Linux). */
+.iconContainer.disabled,
+.iconContainer.disabled:hover,
+.iconContainer.disabled:active:hover {
+  opacity: 0.35;
+  cursor: not-allowed;
+  color: var(--app-icon);
+  background: none;
+  box-shadow: none;
+}

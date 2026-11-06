@@ -58,3 +58,9 @@
 .settingsItemDisabled .settingsItemControl {
   opacity: 0.5;
 }
+
+.settingsItemDisabledReason {
+  color: var(--s-item-description);
+  font-style: italic;
+  opacity: 0.7;
+}

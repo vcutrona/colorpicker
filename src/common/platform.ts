@@ -35,7 +35,8 @@ export const getPlatformInfo = (): Promise<PlatformInfo> =>
     return info
   }))
 
-export const isWindows = async (): Promise<boolean> => (await getPlatformInfo()).family === 'windows'
+export const isWindows = async (): Promise<boolean> =>
+  (await getPlatformInfo()).family === 'windows'
 
 export const isMacos = async (): Promise<boolean> => (await getPlatformInfo()).family === 'macos'
 
@@ -52,3 +53,10 @@ export const isWindowsSync = (): boolean => resolvedFamily === 'windows'
 export const isMacosSync = (): boolean => resolvedFamily === 'macos'
 
 export const isLinuxSync = (): boolean => resolvedFamily === 'linux'
+
+/**
+ * Whether the native eyedropper exists on this platform. Linux only has a
+ * stub (src-tauri/src/picker/platform/linux) that picks nothing, so every
+ * eyedropper-related setting is shown disabled there.
+ */
+export const isPickerSupportedSync = (): boolean => !isLinuxSync()

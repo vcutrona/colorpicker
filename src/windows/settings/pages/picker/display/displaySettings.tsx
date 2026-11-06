@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { SettingsSection, SettingsItem } from '@components/settings'
 import { Toggle, Select } from '@components/ui'
 import { useSettingsStore } from '@stores/settingsStore'
+import { isPickerSupportedSync } from '@common/platform'
 import type { EyedropperGridSizeOption, EyedropperMagnifierSizeOption } from '@interfaces/settings'
 
 const DisplaySettings = () => {
   const SettingsT = useTranslation('settings', { keyPrefix: 'magnifier.display' })
+  const pickerSupported = isPickerSupportedSync()
 
   const eyedropperGridSize = useSettingsStore((state) => state.eyedropperGridSize)
   const eyedropperMagnifierSize = useSettingsStore((state) => state.eyedropperMagnifierSize)
@@ -18,6 +20,7 @@ const DisplaySettings = () => {
   return (
     <SettingsSection title={SettingsT.t('title')}>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('gridSize.label')}
         description={SettingsT.t('gridSize.description')}
       >
@@ -34,6 +37,7 @@ const DisplaySettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('magnifierSize.label')}
         description={SettingsT.t('magnifierSize.description')}
       >
@@ -50,6 +54,7 @@ const DisplaySettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('showHex.label')}
         description={SettingsT.t('showHex.description')}
       >
@@ -59,6 +64,7 @@ const DisplaySettings = () => {
         />
       </SettingsItem>
       <SettingsItem
+        disabled={!pickerSupported}
         label={SettingsT.t('showPixelGrid.label')}
         description={SettingsT.t('showPixelGrid.description')}
       >

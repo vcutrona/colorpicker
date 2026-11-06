@@ -29,5 +29,11 @@
   },
   "notification": {
     "colorPickedTitle": "Color picked"
+  },
+  "unavailable": {
+    "pickerLinux": "The eyedropper isn't available on Linux yet, so these settings have no effect.",
+    "pickerLinuxShort": "Not available on Linux yet: the eyedropper isn't implemented.",
+    "vibrancyLinux": "Not available on Linux.",
+    "notImplemented": "Not implemented yet."
   }
 }

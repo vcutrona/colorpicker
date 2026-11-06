@@ -5,10 +5,12 @@ import { SettingsSection, SettingsItem, SettingsAccordion } from '@components/se
 import { Toggle } from '@components/ui'
 import { useSettingsStore } from '@stores/settingsStore'
 import { useSetting } from '@hooks/index'
+import { isLinuxSync, isPickerSupportedSync } from '@common/platform'
 
 // Hidden by default — unlocked via the click-counter Easter egg in AboutSettings.
 const ExperimentalSettings = () => {
   const SettingsT = useTranslation('settings', { keyPrefix: 'general.experimental' })
+  const CommonT = useTranslation('common')
   const unlocked = useSettingsStore((state) => state.experimentalFeaturesUnlocked)
 
   const [isBordered, setIsBordered] = useSetting('isBordered')
@@ -41,12 +43,16 @@ const ExperimentalSettings = () => {
         <SettingsItem
           label={SettingsT.t('isVibrant.label')}
           description={SettingsT.t('isVibrant.description')}
+          disabled={isLinuxSync()}
+          disabledReason={CommonT.t('unavailable.vibrancyLinux')}
         >
           <Toggle checked={isVibrant} onChange={setIsVibrant} />
         </SettingsItem>
         <SettingsItem
           label={SettingsT.t('eyedropperAdaptiveBorder.label')}
           description={SettingsT.t('eyedropperAdaptiveBorder.description')}
+          disabled={!isPickerSupportedSync()}
+          disabledReason={CommonT.t('unavailable.pickerLinuxShort')}
         >
           <Toggle checked={eyedropperAdaptiveBorder} onChange={setEyedropperAdaptiveBorder} />
         </SettingsItem>

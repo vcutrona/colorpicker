@@ -8,10 +8,18 @@ export interface SettingsItemProps {
   label: string
   description?: string
   disabled?: boolean
+  /** Shown under the description while `disabled`, to explain why. */
+  disabledReason?: string
   children?: React.ReactNode
 }
 
-const SettingsItem = ({ label, description, disabled = false, children }: SettingsItemProps) => {
+const SettingsItem = ({
+  label,
+  description,
+  disabled = false,
+  disabledReason,
+  children,
+}: SettingsItemProps) => {
   return (
     <section className={classNames(style.settingsItem, disabled && style.settingsItemDisabled)}>
       <div className={style.settingsItemInfo}>
@@ -21,6 +29,11 @@ const SettingsItem = ({ label, description, disabled = false, children }: Settin
         {description && (
           <Text size="small" className={style.settingsItemDescription}>
             {description}
+          </Text>
+        )}
+        {disabled && disabledReason && (
+          <Text size="small" className={style.settingsItemDisabledReason}>
+            {disabledReason}
           </Text>
         )}
       </div>
