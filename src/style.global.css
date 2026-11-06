@@ -40,20 +40,26 @@ body,
 }
 
 /* Global Style */
+/* The fonts are variable: declaring each one's weight range lets the browser
+   use the real bold/semibold instances instead of faking them by smearing
+   the regular outlines, which renders blurry (notably in WebKitGTK). */
 @font-face {
   font-family: Ubuntu;
+  font-weight: 100 800;
   font-display: swap;
   src: url('@assets/fonts/UbuntuSans-VariableFont.ttf') format('truetype');
 }
 
 @font-face {
   font-family: UbuntuMono;
+  font-weight: 400 700;
   font-display: swap;
   src: url('@assets/fonts/UbuntuSansMono-VariableFont.ttf') format('truetype');
 }
 
 @font-face {
   font-family: FiraCode;
+  font-weight: 300 700;
   font-display: swap;
   src: url('@assets/fonts/FiraCode-VariableFont.ttf') format('truetype');
 }
